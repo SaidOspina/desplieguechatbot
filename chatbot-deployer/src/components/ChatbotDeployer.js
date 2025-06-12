@@ -168,21 +168,28 @@ const InteractivePreview = ({ chatbotData, webConfig }) => {
             {/* Options/Input area */}
             <div className="p-4 bg-white border-t">
               {!isTyping && currentNode && (currentNode.type === 'start' || currentNode.type === 'question') && currentNode.data.options && (
-                <div className="space-y-2">
+                <div 
+                  className={`space-y-2 chatbot-options-area ${
+                    currentNode.data.options.length > 1 
+                      ? 'max-h-24 overflow-y-auto pr-1' 
+                      : ''
+                  }`}
+                >
                   {currentNode.data.options.map((option, index) => (
                     <button
                       key={index}
                       onClick={() => handleOptionSelect(index, option)}
-                      className="w-full text-left p-3 border-2 border-gray-200 rounded-lg hover:shadow-md transition-all text-sm font-medium"
+                      className="w-full text-left p-3 border-2 border-gray-200 rounded-lg hover:shadow-md transition-all text-sm font-medium block"
                       style={{ 
                         borderColor: webConfig.primaryColor + '40',
-                        color: webConfig.primaryColor 
+                        color: webConfig.primaryColor,
+                        minHeight: '48px' // Altura mínima consistente
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.backgroundColor = webConfig.primaryColor;
                         e.target.style.color = 'white';
                         e.target.style.borderColor = webConfig.primaryColor;
-                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.transform = 'translateY(-1px)';
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.backgroundColor = 'transparent';
@@ -191,9 +198,27 @@ const InteractivePreview = ({ chatbotData, webConfig }) => {
                         e.target.style.transform = 'translateY(0)';
                       }}
                     >
-                      {option}
+                      <span className="block">{option}</span>
+                      {currentNode.data.options.length > 2 && (
+                        <span className="text-xs opacity-60 mt-1 block">
+                          Opción {index + 1} de {currentNode.data.options.length}
+                        </span>
+                      )}
                     </button>
                   ))}
+                  
+                  {/* Indicador visual de scroll - solo si hay overflow */}
+                  {currentNode.data.options.length > 2 && (
+                    <div className="text-center py-1 border-t border-gray-100 mt-2 pt-2">
+                      <div className="inline-flex items-center text-xs text-gray-400">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M7 13l3 3 3-3"></path>
+                          <path d="M7 6l3 3 3-3"></path>
+                        </svg>
+                        <span className="ml-1">Desliza para ver más opciones</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               
